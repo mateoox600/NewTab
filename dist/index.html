@@ -17,10 +17,31 @@
             height: 100vh;
             overflow: hidden;
         }
+        #search-bar {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            background-image: url(searchIcon.png);
+            background-position: 10px 50%;
+            background-repeat: no-repeat;
+            background-size: 40px;
+            background-color: rgba(181, 184, 201, 0.95);
+            padding-left: 55px;
+            padding-right: 20px;
+            transform: translate(-50%, -50%);
+            width: 30vw;
+            height: 50px;
+            border: none;
+            border-radius: 50px;
+            outline: none;
+            font: 28px sans-serif;
+            color: #171822;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <input type="text" name="" id="search-bar">
     <script src="bundle.js"></script>
 </body>
 </html>

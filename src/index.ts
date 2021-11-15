@@ -3,6 +3,15 @@ import Segment from './vector/Segment';
 import Vector from './vector/Vector';
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const searchBox = document.getElementById('search-bar') as HTMLInputElement;
+
+searchBox.addEventListener('keypress', (e) => {
+    if(e.key === 'Enter') {
+        if(searchBox.value.length < 1) return;
+        window.location.href = 'https://www.google.com/search?q=' + searchBox.value.replace(' ', '+');
+    }
+});
+
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 canvas.width = innerWidth;
@@ -26,7 +35,7 @@ function draw() {
 
     ctx.fillStyle = '#edefff';
     ctx.strokeStyle = '#edefff';
-    ctx.font = '128px sans-serif'
+    ctx.font = '128px sans-serif';
 
     const date = new Date();
     ctx.fillText(`${date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`, innerWidth - innerWidth / 5 + 25, innerHeight / 5 - 25);
