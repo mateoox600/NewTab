@@ -23,8 +23,8 @@ var cellSize = 100;
 const borders: Segment[] = [
     new Segment(new Vector(0, 0), new Vector(0, innerHeight)),
     new Segment(new Vector(0, innerHeight), new Vector(innerWidth, innerHeight)),
-    new Segment(new Vector(innerWidth, innerHeight), new Vector(innerWidth, innerHeight / 5)),
-    new Segment(new Vector(0, 0), new Vector(innerWidth / 5 * 4, 0)),
+    new Segment(new Vector(innerWidth, innerHeight), new Vector(innerWidth, 0)),
+    new Segment(new Vector(0, 0), new Vector(innerWidth, 0)),
     new Segment(new Vector(innerWidth / 5 * 4, 0), new Vector(innerWidth / 5 * 4, innerHeight / 5)),
     new Segment(new Vector(innerWidth / 5 * 4, innerHeight / 5), new Vector(innerWidth, innerHeight / 5)),
 ]
