@@ -41,6 +41,10 @@ function draw() {
     const date = new Date();
     ctx.fillText(`${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`, innerWidth - innerWidth / 5 + 25, innerHeight / 5 - 25);
 
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#313147';
+    ctx.fillText('Made by Mateoox600', 5, innerHeight - 15);
+
     map.draw();
 
     requestAnimationFrame(draw);
