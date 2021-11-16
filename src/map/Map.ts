@@ -35,6 +35,7 @@ export default class Map {
     
         this.ctx.fillStyle = `rgb(237, 239, 255)`;
         this.ctx.strokeStyle = `rgb(237, 239, 255, ${Math.min(this.fade, 255) / 256})`;
+        this.ctx.lineWidth = 0.75;
 
         this.segments.filter((seg) => !this.segments.find((s) => Segment.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
     
