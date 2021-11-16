@@ -6,10 +6,26 @@ import Vector from './vector/Vector';
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const searchBox = document.getElementById('search-bar') as HTMLInputElement;
 
+const settingsButton = document.getElementById('settings') as HTMLButtonElement;
+const settingsPage = document.getElementById('settings-page') as HTMLDivElement;
+
+settingsButton.addEventListener('click', () => {
+    if(settingsPage.style.visibility === 'visible') settingsPage.style.visibility = 'hidden';
+    else settingsPage.style.visibility = 'visible';
+});
+
+const searchLink = document.getElementById('search-link-input') as HTMLInputElement;
+searchLink.value = window.localStorage.getItem('search') || 'https://www.google.com/search?q=%s';
+
+searchLink.addEventListener('input', () => {
+    window.localStorage.setItem('search', searchLink.value);
+});
+
 searchBox.addEventListener('keypress', (e) => {
     if(e.key === 'Enter') {
         if(searchBox.value.length < 1) return;
-        window.location.href = 'https://www.google.com/search?q=' + searchBox.value.replace(' ', '+');
+        const search = searchBox.value.replace(' ', '+');
+        window.location.href = searchLink.value.replace('%s', search);
     }
 });
 
