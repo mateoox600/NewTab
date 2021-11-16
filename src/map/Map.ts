@@ -7,7 +7,6 @@ export default class Map {
     public points: Point[] = [];
     public segments: Segment[] = [];
     public lastSegments: Segment[] = [];
-    public lastSegmentsPoints: Point[] = [];
     public fade: number = 0;
     public mousePos: Vector = new Vector(0, 0);
 
@@ -95,10 +94,10 @@ export default class Map {
     }
 
     public calculateSegments() {
-        this.lastSegmentsPoints = this.points.map((point) => new Point(point.x, point.y, point.rotationSpeed, point.cell));
+        let lastSegmentsPoints = this.points.map((point) => new Point(point.x, point.y, point.rotationSpeed, point.cell));
         this.lastSegments = this.segments.map((seg) => {
-            const from = this.lastSegmentsPoints.find((point) => point.equal(seg.from)) as Point;
-            const to = this.lastSegmentsPoints.find((point) => point.equal(seg.to)) as Point;
+            const from = lastSegmentsPoints.find((point) => point.equal(seg.from)) as Point;
+            const to = lastSegmentsPoints.find((point) => point.equal(seg.to)) as Point;
             return new Segment(from, to);
         });
         this.fade = 0;

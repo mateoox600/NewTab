@@ -1,9 +1,7 @@
 
 export default class Vector {
 
-    constructor(public x: number, public y: number) {
-
-    }
+    constructor(public x: number, public y: number) { }
 
     public equal(v: Vector) {
         return v.x === this.x && v.y === this.y;
@@ -20,9 +18,7 @@ export default class Vector {
     }
 
     public distance(vec: Vector) {
-        let a = this.x - vec.x;
-        let b = this.y - vec.y;
-        return Math.sqrt(a*a + b*b);
+        return Math.sqrt(Math.pow(this.y - vec.y, 2) + Math.pow(this.x - vec.x, 2));
     }
 
     public copy() {
