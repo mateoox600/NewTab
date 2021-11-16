@@ -13,9 +13,15 @@ export default class Vector {
         ang = -ang * (Math.PI/180);
         var cos = Math.cos(ang);
         var sin = Math.sin(ang);
-        this.x = Math.round(10000*(this.x * cos - this.y * sin))/10000;
-        this.y = Math.round(10000*(this.x * sin + this.y * cos))/10000;
+        this.x = (this.x * cos - this.y * sin);
+        this.y = (this.x * sin + this.y * cos);
         return this;
+    }
+
+    public distance(vec: Vector) {
+        let a = this.x - vec.x;
+        let b = this.y - vec.y;
+        return Math.sqrt(a*a + b*b);
     }
 
     public copy() {

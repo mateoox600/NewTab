@@ -5,6 +5,7 @@ import Vector from './vector/Vector';
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const searchBox = document.getElementById('search-bar') as HTMLInputElement;
 
+searchBox.focus();
 searchBox.addEventListener('keypress', (e) => {
     if(e.key === 'Enter') {
         if(searchBox.value.length < 1) return;
@@ -38,7 +39,7 @@ function draw() {
     ctx.font = '128px sans-serif';
 
     const date = new Date();
-    ctx.fillText(`${date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`, innerWidth - innerWidth / 5 + 25, innerHeight / 5 - 25);
+    ctx.fillText(`${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`, innerWidth - innerWidth / 5 + 25, innerHeight / 5 - 25);
 
     map.draw();
 
@@ -56,9 +57,10 @@ setInterval(() => {
         const translate = new Vector(cellCenter.x - point.x, cellCenter.y - point.y);
         const rotatedTranslate = translate.copy().rotate(point.rotationSpeed);
         const pointTranslate = new Vector(translate.x - rotatedTranslate.x, translate.y - rotatedTranslate.y);
-        
+
         point.x += pointTranslate.x;
         point.y += pointTranslate.y;
+
         return point;
     });
     
@@ -66,6 +68,10 @@ setInterval(() => {
 
 setInterval(() => {
     map.calculateSegments();
-}, 10*1000);
+}, 10 * 1000);
+
+setInterval(() => {
+    map = new Map(ctx, cellSize, borders);
+}, 5 * 60 * 1000);
 
 draw();
