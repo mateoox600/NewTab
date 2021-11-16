@@ -5,6 +5,7 @@ import Vector from './vector/Vector';
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const searchBox = document.getElementById('search-bar') as HTMLInputElement;
+const timeLabel = document.getElementById('time') as HTMLParagraphElement;
 
 const settingsButton = document.getElementById('settings') as HTMLButtonElement;
 const settingsPage = document.getElementById('settings-page') as HTMLDivElement;
@@ -50,14 +51,8 @@ var map: Map = new Map(ctx, cellSize, borders);
 function draw() {
     ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-    ctx.fillStyle = '#edefff';
-    ctx.font = '128px sans-serif';
     const date = new Date();
-    ctx.fillText(`${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`, innerWidth - innerWidth / 5 + 25, innerHeight / 5 - 25);
-
-    ctx.fillStyle = '#313147';
-    ctx.font = '12px sans-serif';
-    ctx.fillText('Made by Mateoox600', 5, innerHeight - 15);
+    timeLabel.innerText = `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`
 
     map.draw();
 

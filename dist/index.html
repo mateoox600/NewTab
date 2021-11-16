@@ -20,6 +20,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            filter: blur(1.5px);
         }
         #search-bar {
             position: absolute;
@@ -127,11 +128,29 @@
             width: 100%;
             border: 1px solid #edefff;
         }
+
+        #time {
+            position: absolute;
+            top: 4%;
+            right: 2%;
+            font: 128px sans-serif;
+            color: #edefff;
+        }
+
+        #made {
+            position: absolute;
+            bottom: 1%;
+            left: 1%;
+            color: #363649;
+            font: 12px sans-serif;
+        }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
     <input type="text" name="search-bar" id="search-bar" required>
+    <p id="time">00:00</p>
+    <p id="made">Made by Mateoox600</p>
     <button id="settings"><img src="settings.png" alt="Settings"></button>
     <div id="settings-page">
         <div id="search-link">
