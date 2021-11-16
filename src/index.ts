@@ -63,15 +63,10 @@ setInterval(() => {
 
         return point;
     });
-    
 }, 1000 / 60);
 
 setInterval(() => {
     map.calculateSegments();
 }, 10 * 1000);
-
-setInterval(() => {
-    map = new Map(ctx, cellSize, borders);
-}, 5 * 60 * 1000);
 
 draw();
