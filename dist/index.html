@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Tab</title>
     <style>
+        * {
+            margin: 0;
+        }
         body {
             width: 100vw;
             height: 100vh;
@@ -24,18 +27,22 @@
             background-image: url(searchIcon.png);
             background-position: 10px 50%;
             background-repeat: no-repeat;
+            background-color: rgba(0, 0, 0, 0);
             background-size: 40px;
-            background-color: rgba(181, 184, 201, 0.95);
-            padding-left: 55px;
+            padding-left: 58px;
             padding-right: 20px;
             transform: translate(-50%, -50%);
             width: 30vw;
             height: 50px;
-            border: none;
+            border: 2px solid rgba(56, 61, 75, 0.95);
             border-radius: 50px;
             outline: none;
             font: 24px sans-serif;
-            color: #171822;
+            color: #edefff;
+        }
+
+        #search-bar:hover,#search-bar:focus {
+            background-color: rgba(56, 61, 75, 0.95);
         }
     </style>
 </head>
