@@ -9,10 +9,13 @@ export default class Map {
     public lastSegments: Segment[] = [];
     public fade: number = 0;
     public mousePos: Vector = new Vector(0, 0);
+    public size: Vector;
+    public borders: Segment[];
 
-    constructor(public ctx: CanvasRenderingContext2D, public cellSize: number, public borders: Segment[]) {
-        for(let cellX = 0; cellX < Math.floor(innerWidth / cellSize) + 2; cellX++) {
-            for(let cellY = 0; cellY < Math.floor(innerHeight / cellSize) + 2; cellY++) {
+    constructor(public ctx: CanvasRenderingContext2D, public cellSize: number, public getBorders: () => Segment[]) {
+        this.size = new Vector(Math.floor(innerWidth / cellSize) + 2, Math.floor(innerHeight / cellSize) + 2);
+        for(let cellX = 0; cellX < this.size.x; cellX++) {
+            for(let cellY = 0; cellY < this.size.y; cellY++) {
                 const pointX = Math.floor(Math.random() * cellSize);
                 const pointY = Math.floor(Math.random() * cellSize);
                 const x = cellX * cellSize + pointX;
@@ -22,13 +25,7 @@ export default class Map {
             }
         }
 
-        this.borders = this.borders.map((v) => {
-            v.from.x += this.cellSize;
-            v.from.y += this.cellSize;
-            v.to.x += this.cellSize;
-            v.to.y += this.cellSize;
-            return v;
-        });
+        this.borders = this.getBorderFormated();
 
         ctx.canvas.addEventListener('mousemove', (e) => {
             this.mousePos.x = e.x;
@@ -38,7 +35,44 @@ export default class Map {
         this.calculateSegments();
     }
 
+    private getBorderFormated() {
+        return this.getBorders().map((v) => {
+            v.from.x += this.cellSize;
+            v.from.y += this.cellSize;
+            v.to.x += this.cellSize;
+            v.to.y += this.cellSize;
+            return v;
+        });
+    }
+
     public draw() {
+
+        if(Math.floor(innerWidth / this.cellSize) + 2 != this.size.x || Math.floor(innerHeight / this.cellSize) + 2 != this.size.y) {
+
+            this.size = new Vector(Math.floor(innerWidth / this.cellSize) + 2, Math.floor(innerHeight / this.cellSize) + 2);
+            
+            this.points = this.points.filter((point) => {
+                return point.cell.x <= this.size.x && point.cell.y <= this.size.y;
+            });
+            console.log(this.points);
+            
+
+            for(let cellX = 0; cellX < this.size.x; cellX++) {
+                for(let cellY = 0; cellY < this.size.y; cellY++) {
+                    if(this.getPointByCell(new Vector(cellX, cellY)) != undefined) continue;
+
+                    const pointX = Math.floor(Math.random() * this.cellSize);
+                    const pointY = Math.floor(Math.random() * this.cellSize);
+                    const x = cellX * this.cellSize + pointX;
+                    const y = cellY * this.cellSize + pointY;
+    
+                    this.points.push(new Point(x, y, 1, new Vector(cellX, cellY)));
+                }
+            }
+
+            this.calculateSegments();
+            this.borders = this.getBorderFormated();
+        }
 
         this.ctx.save();
 
@@ -54,8 +88,12 @@ export default class Map {
     
             if(colide.find((v) => v)) return;
             
+            
             if(segment.from.x < this.cellSize || segment.from.x > innerWidth + this.cellSize || segment.from.y < this.cellSize || segment.from.y > innerHeight + this.cellSize ||
                 segment.to.x < this.cellSize || segment.to.x > innerWidth + this.cellSize || segment.to.y < this.cellSize || segment.to.y > innerHeight + this.cellSize) return;
+            
+            console.log(segment);
+            
             if((segment.from.x > innerWidth - innerWidth / 5 + this.cellSize && segment.from.y < innerHeight / 5 + this.cellSize) ||
                 (segment.to.x > innerWidth - innerWidth / 5 + this.cellSize && segment.to.y < innerHeight / 5 + this.cellSize)) return;
             
@@ -96,10 +134,12 @@ export default class Map {
     public calculateSegments() {
         let lastSegmentsPoints = this.points.map((point) => new Point(point.x, point.y, point.rotationSpeed, point.cell));
         this.lastSegments = this.segments.map((seg) => {
-            const from = lastSegmentsPoints.find((point) => point.equal(seg.from)) as Point;
-            const to = lastSegmentsPoints.find((point) => point.equal(seg.to)) as Point;
+            const from = lastSegmentsPoints.find((point) => point.equal(seg.from));
+            const to = lastSegmentsPoints.find((point) => point.equal(seg.to));
+            if(from == undefined) return undefined;
+            if(to == undefined) return undefined;
             return new Segment(from, to);
-        });
+        }).filter((seg) => seg != undefined) as Segment[];
         this.fade = 0;
         this.segments.length = 0;
         this.points.forEach((point) => {
