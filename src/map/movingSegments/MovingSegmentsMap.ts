@@ -2,44 +2,50 @@ import Map from '../Map';
 import Point from './Point';
 import Segment from '../../vector/Segment';
 import Vector from '../../vector/Vector';
+import Utils from '../../Utils';
 
 export default class MovingSegmentsMap extends Map {
 
     public points: Point[] = [];
     public segments: Segment[] = [];
     public lastSegments: Segment[] = [];
+    public cellSize = 100;
     public fade: number = 0;
-    public mousePos: Vector = new Vector(0, 0);
     public size: Vector;
-    public borders: Segment[];
+    public borders: Segment[]  = this.getBorderFormated();
 
-    constructor(public ctx: CanvasRenderingContext2D, public cellSize: number, public getBorders: () => Segment[]) {
+    constructor(public ctx: CanvasRenderingContext2D) {
         super(ctx);
         
-        this.size = new Vector(Math.floor(innerWidth / cellSize) + 2, Math.floor(innerHeight / cellSize) + 2);
+        this.size = new Vector(Math.floor(innerWidth / this.cellSize) + 2, Math.floor(innerHeight / this.cellSize) + 2);
         for(let cellX = 0; cellX < this.size.x; cellX++) {
             for(let cellY = 0; cellY < this.size.y; cellY++) {
-                const pointX = Math.floor(Math.random() * cellSize);
-                const pointY = Math.floor(Math.random() * cellSize);
-                const x = cellX * cellSize + pointX;
-                const y = cellY * cellSize + pointY;
-
+                const x = cellX * this.cellSize + Math.floor(Math.random() * this.cellSize);
+                const y = cellY * this.cellSize + Math.floor(Math.random() * this.cellSize);
                 this.points.push(new Point(x, y, 1, new Vector(cellX, cellY)));
             }
         }
-
-        this.borders = this.getBorderFormated();
-
-        ctx.canvas.addEventListener('mousemove', (e) => {
-            this.mousePos.x = e.x;
-            this.mousePos.y = e.y;
-        });
+        
+        setInterval(() => {
+            this.updatePoints();
+        }, 1000 / 60);
+        
+        setInterval(() => {
+            this.calculateSegments();
+        }, 10 * 1000);
 
         this.calculateSegments();
     }
 
     private getBorderFormated() {
-        return this.getBorders().map((v) => {
+        return [
+            new Segment(new Vector(0, 0), new Vector(0, innerHeight)),
+            new Segment(new Vector(0, innerHeight), new Vector(innerWidth, innerHeight)),
+            new Segment(new Vector(innerWidth, innerHeight), new Vector(innerWidth, 0)),
+            new Segment(new Vector(0, 0), new Vector(innerWidth, 0)),
+            new Segment(new Vector(innerWidth / 5 * 4, 0), new Vector(innerWidth / 5 * 4, innerHeight / 5)),
+            new Segment(new Vector(innerWidth / 5 * 4, innerHeight / 5), new Vector(innerWidth, innerHeight / 5)),
+        ].map((v) => {
             v.from.x += this.cellSize;
             v.from.y += this.cellSize;
             v.to.x += this.cellSize;
@@ -81,34 +87,28 @@ export default class MovingSegmentsMap extends Map {
 
         this.ctx.translate(-this.cellSize, -this.cellSize);
     
-        this.ctx.fillStyle = `rgb(237, 239, 255)`;
         this.ctx.strokeStyle = `rgb(237, 239, 255, ${Math.min(this.fade, 255) / 256})`;
         this.ctx.lineWidth = 0.75;
 
+        this.ctx.beginPath();
         this.segments.filter((seg) => !this.segments.find((s) => Segment.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
     
             const colide = this.borders.map((border) => Segment.isIntersecting(border, segment));
     
             if(colide.find((v) => v)) return;
             
-            
-            if(segment.from.x < this.cellSize || segment.from.x > innerWidth + this.cellSize || segment.from.y < this.cellSize || segment.from.y > innerHeight + this.cellSize ||
-                segment.to.x < this.cellSize || segment.to.x > innerWidth + this.cellSize || segment.to.y < this.cellSize || segment.to.y > innerHeight + this.cellSize) return;
-            
-            console.log(segment);
-            
             if((segment.from.x > innerWidth - innerWidth / 5 + this.cellSize && segment.from.y < innerHeight / 5 + this.cellSize) ||
                 (segment.to.x > innerWidth - innerWidth / 5 + this.cellSize && segment.to.y < innerHeight / 5 + this.cellSize)) return;
             
-            this.ctx.beginPath();
             this.ctx.moveTo(segment.from.x, segment.from.y);
             this.ctx.lineTo(segment.to.x, segment.to.y);
-            this.ctx.stroke();
         });
+        this.ctx.stroke();
 
         if(this.fade < 256) {
             this.fade += 5;
             this.ctx.strokeStyle = `rgba(237, 239, 255, ${Math.max(256 - this.fade, 0) / 256})`;
+            this.ctx.beginPath();
             this.lastSegments.filter((seg) => !this.lastSegments.find((s) => Segment.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
                 const colide = this.borders.map((border) => Segment.isIntersecting(border, segment));
         
@@ -119,11 +119,10 @@ export default class MovingSegmentsMap extends Map {
                 if((segment.from.x > innerWidth - innerWidth / 5 && segment.from.y < innerHeight / 5) ||
                     (segment.to.x > innerWidth - innerWidth / 5 && segment.to.y < innerHeight / 5)) return;
                 
-                this.ctx.beginPath();
                 this.ctx.moveTo(segment.from.x, segment.from.y);
                 this.ctx.lineTo(segment.to.x, segment.to.y);
-                this.ctx.stroke();
             });
+            this.ctx.stroke();
         }
 
         this.ctx.restore();
@@ -165,8 +164,21 @@ export default class MovingSegmentsMap extends Map {
         });
     }
 
-    public updatePoints(callback: (point: Point) => Point) {
-        this.points = this.points.map(callback);
+    public updatePoints() {
+        this.points = this.points.map((point) => {
+                
+            point.rotationSpeed = Utils.clamp(point.rotationSpeed + (Math.random() / 10 - 0.05), 0.5, 1.25);
+    
+            const cellCenter = new Vector(point.cell.x * this.cellSize + (this.cellSize / 2), point.cell.y * this.cellSize + (this.cellSize / 2));
+            const translate = new Vector(cellCenter.x - point.x, cellCenter.y - point.y);
+            const rotatedTranslate = translate.copy().rotate(point.rotationSpeed);
+            const pointTranslate = new Vector(translate.x - rotatedTranslate.x, translate.y - rotatedTranslate.y);
+    
+            point.x += pointTranslate.x;
+            point.y += pointTranslate.y;
+    
+            return point;
+        });
     }
 
 }

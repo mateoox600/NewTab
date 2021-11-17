@@ -12,8 +12,8 @@ export default class Vector {
         var cos = Math.cos(ang);
         var sin = Math.sin(ang);
         let tempX = this.x;
-        this.x = (this.x * cos - this.y * sin);
-        this.y = (tempX * sin + this.y * cos);
+        this.x = this.x * cos - this.y * sin;
+        this.y = tempX * sin + this.y * cos;
         return this;
     }
 
