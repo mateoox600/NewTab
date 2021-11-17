@@ -1,0 +1,72 @@
+#settings {
+    position: absolute;
+    bottom: 1vh;
+    right: 1vh;
+    background: none;
+    border: none;
+    width: 50px;
+    height: 50px;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+#settings>img {
+    width: 40px;
+    height: 40px;
+    opacity: 0;
+    transition: all ease-in-out 0.2s;
+}
+
+#settings:hover>img {
+    opacity: 1;
+}
+
+#settings-page {
+    position: absolute;
+    right: 1vh;
+    bottom: calc(1vh + 60px);
+    width: 20vw;
+    height: 70vh;
+    border-radius: 20px;
+    background-color: rgb(29, 29, 59, 0.5);
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#search-link {
+    width: 100%;
+    padding-left: 3%;
+    padding-top: 5%;
+    padding-bottom: 2%;
+    display: flex;
+    flex-direction: column;
+}
+
+#search-link>p {
+    font: 24px sans-serif;
+    margin-bottom: 5px;
+}
+
+#search-link-input {
+    width: 90%;
+    height: 25px;
+    font: 16px sans-serif;
+    border-radius: 12px;
+    padding-left: 2%;
+    padding-right: 2%;
+    border: 2px solid rgba(56, 61, 75, 0.95);
+    background-color: transparent;
+    color: #edefff;
+    transition: all ease-in-out 0.2s;
+}
+
+#search-link-input:hover,#search-link-input:focus {
+    background-color: rgba(56, 61, 75, 0.95);
+    caret-color: #edefff;
+}
+
+.separator {
+    width: 100%;
+    border: 1px solid #edefff;
+}
