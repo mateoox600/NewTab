@@ -1,4 +1,4 @@
-import Map from './map/Map';
+import MovingSegmentsMap from './map/movingSegments/MovingSegmentsMap';
 import Utils from './Utils';
 import Segment from './vector/Segment';
 import Vector from './vector/Vector';
@@ -45,7 +45,7 @@ function getBorder() {
     ];
 }
 
-var map: Map = new Map(ctx, cellSize, getBorder);
+var map = new MovingSegmentsMap(ctx, cellSize, getBorder);
 
 function draw() {
     canvas.width = innerWidth;

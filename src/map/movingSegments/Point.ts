@@ -1,4 +1,4 @@
-import Vector from '../vector/Vector';
+import Vector from '../../vector/Vector';
 
 export default class Point extends Vector {
 
