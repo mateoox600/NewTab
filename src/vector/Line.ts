@@ -1,12 +1,12 @@
 import Vector from './Vector';
 
-export default class Segment {
+export default class Line {
 
     constructor(public from: Vector, public to: Vector) {
 
     }
 
-    public static isIntersecting(s1: Segment, s2: Segment) {
+    public static isIntersecting(s1: Line, s2: Line) {
         function CCW(p1: Vector, p2: Vector, p3: Vector) {
             return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);
         }

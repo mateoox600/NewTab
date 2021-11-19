@@ -1,5 +1,7 @@
 
-export default abstract class Map {
+export default abstract class Background {
+
+    public abstract name: string;
 
     constructor(public ctx: CanvasRenderingContext2D) { }
 

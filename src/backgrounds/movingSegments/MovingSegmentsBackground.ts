@@ -1,18 +1,20 @@
-import Map from '../Map';
+import Background from '../Background';
 import Point from './Point';
-import Segment from '../../vector/Segment';
+import Line from '../../vector/Line';
 import Vector from '../../vector/Vector';
 import Utils from '../../Utils';
 
-export default class MovingSegmentsMap extends Map {
+export default class MovingSegmentsBackground extends Background {
+
+    public name = 'Moving Segments';
 
     public points: Point[] = [];
-    public segments: Segment[] = [];
-    public lastSegments: Segment[] = [];
+    public segments: Line[] = [];
+    public lastSegments: Line[] = [];
     public cellSize = 100;
     public fade: number = 0;
     public size: Vector;
-    public borders: Segment[]  = this.getBorderFormated();
+    public borders: Line[]  = this.getBorderFormated();
 
     constructor(public ctx: CanvasRenderingContext2D) {
         super(ctx);
@@ -39,12 +41,12 @@ export default class MovingSegmentsMap extends Map {
 
     private getBorderFormated() {
         return [
-            new Segment(new Vector(0, 0), new Vector(0, innerHeight)),
-            new Segment(new Vector(0, innerHeight), new Vector(innerWidth, innerHeight)),
-            new Segment(new Vector(innerWidth, innerHeight), new Vector(innerWidth, 0)),
-            new Segment(new Vector(0, 0), new Vector(innerWidth, 0)),
-            new Segment(new Vector(innerWidth / 5 * 4, 0), new Vector(innerWidth / 5 * 4, innerHeight / 5)),
-            new Segment(new Vector(innerWidth / 5 * 4, innerHeight / 5), new Vector(innerWidth, innerHeight / 5)),
+            new Line(new Vector(0, 0), new Vector(0, innerHeight)),
+            new Line(new Vector(0, innerHeight), new Vector(innerWidth, innerHeight)),
+            new Line(new Vector(innerWidth, innerHeight), new Vector(innerWidth, 0)),
+            new Line(new Vector(0, 0), new Vector(innerWidth, 0)),
+            new Line(new Vector(innerWidth / 5 * 4, 0), new Vector(innerWidth / 5 * 4, innerHeight / 5)),
+            new Line(new Vector(innerWidth / 5 * 4, innerHeight / 5), new Vector(innerWidth, innerHeight / 5)),
         ].map((v) => {
             v.from.x += this.cellSize;
             v.from.y += this.cellSize;
@@ -91,9 +93,9 @@ export default class MovingSegmentsMap extends Map {
         this.ctx.lineWidth = 0.75;
 
         this.ctx.beginPath();
-        this.segments.filter((seg) => !this.segments.find((s) => Segment.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
+        this.segments.filter((seg) => !this.segments.find((s) => Line.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
     
-            const colide = this.borders.map((border) => Segment.isIntersecting(border, segment));
+            const colide = this.borders.map((border) => Line.isIntersecting(border, segment));
     
             if(colide.find((v) => v)) return;
             
@@ -109,13 +111,11 @@ export default class MovingSegmentsMap extends Map {
             this.fade += 5;
             this.ctx.strokeStyle = `rgba(237, 239, 255, ${Math.max(256 - this.fade, 0) / 256})`;
             this.ctx.beginPath();
-            this.lastSegments.filter((seg) => !this.lastSegments.find((s) => Segment.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
-                const colide = this.borders.map((border) => Segment.isIntersecting(border, segment));
+            this.lastSegments.filter((seg) => !this.lastSegments.find((s) => Line.isIntersecting(seg, s) && (s.from !== seg.from && s.to !== seg.to) && (s.from !== seg.to && s.to !== seg.from))).forEach((segment) => {
+                const colide = this.borders.map((border) => Line.isIntersecting(border, segment));
         
                 if(colide.find((v) => v)) return;
         
-                if(segment.from.x < 0 || segment.from.x > innerWidth || segment.from.y < 0 || segment.from.y > innerHeight ||
-                    segment.to.x < 0 || segment.to.x > innerWidth || segment.to.y < 0 || segment.to.y > innerHeight) return;
                 if((segment.from.x > innerWidth - innerWidth / 5 && segment.from.y < innerHeight / 5) ||
                     (segment.to.x > innerWidth - innerWidth / 5 && segment.to.y < innerHeight / 5)) return;
                 
@@ -140,8 +140,8 @@ export default class MovingSegmentsMap extends Map {
             const to = lastSegmentsPoints.find((point) => point.equal(seg.to));
             if(from == undefined) return undefined;
             if(to == undefined) return undefined;
-            return new Segment(from, to);
-        }).filter((seg) => seg != undefined) as Segment[];
+            return new Line(from, to);
+        }).filter((seg) => seg != undefined) as Line[];
         this.fade = 0;
         this.segments.length = 0;
         this.points.forEach((point) => {
@@ -159,7 +159,7 @@ export default class MovingSegmentsMap extends Map {
             neighbours.forEach((neighbour) => {
                 if(neighbour == undefined) return;
                 if(this.segments.find((v) => (v.from.equal(point) && v.to.equal(neighbour)) || (v.from.equal(neighbour) && v.to.equal(point)))) return;
-                if(Math.random() < 0.4) this.segments.push(new Segment(point, neighbour));
+                if(Math.random() < 0.4) this.segments.push(new Line(point, neighbour));
             });
         });
     }
