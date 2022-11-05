@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "start": "webpack -w"
+    "start": "webpack -w --mode=development",
+    "build": "webpack --mode=production"
   },
   "devDependencies": {
     "ts-loader": "^9.2.6",
